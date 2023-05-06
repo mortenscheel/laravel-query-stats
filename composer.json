@@ -1,0 +1,32 @@
+{
+    "name": "mortenscheel/query-stats",
+    "description": "Laravel query stats package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Morten Scheel",
+            "email": "morten@mortenscheel.com",
+            "homepage": "https://mortenscheel.com"
+        }
+    ],
+    "homepage": "https://github.com/mortenscheel/query-stats",
+    "keywords": ["Laravel", "QueryStats"],
+    "require": {
+        "illuminate/support": "^10"
+    },
+    "autoload": {
+        "psr-4": {
+            "MortenScheel\\QueryStats\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MortenScheel\\QueryStats\\QueryStatsServiceProvider"
+            ],
+            "aliases": {
+                "QueryStats": "MortenScheel\\QueryStats\\Facades\\QueryStats"
+            }
+        }
+    }
+}
