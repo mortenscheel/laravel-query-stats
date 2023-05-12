@@ -14,6 +14,8 @@ final class QueryStats
 {
     private bool $showAllQueries = false;
 
+    private bool $ignoreBindings = false;
+
     private ?string $logChannel = null;
 
     /** @var array<string, \MortenScheel\QueryStats\CapturedQuery> */
@@ -98,17 +100,29 @@ final class QueryStats
         return $this;
     }
 
+    public function ignoreBindings(bool $ignore = true): self
+    {
+        $this->ignoreBindings = $ignore;
+
+        return $this;
+    }
+
     private function captureQuery(QueryExecuted $event): void
     {
         if (! $this->enabled) {
             return;
         }
-        $inlined = $this->inlineBindings($event->sql, $event->bindings);
-        $captured = $this->capturedQueries[$inlined] ??= new CapturedQuery($inlined);
+        if ($this->ignoreBindings) {
+            $query = $event->sql;
+        } else {
+            $query = $this->inlineBindings($event->sql, $event->bindings);
+        }
+        /** @noinspection NestedAssignmentsUsageInspection */
+        $captured = $this->capturedQueries[$query] ??= new CapturedQuery($query);
         $captured->count++;
         $captured->times[] = $event->time;
         if ($this->showAllQueries) {
-            Log::channel($this->logChannel)->info($inlined, ['time' => $event->time]);
+            Log::channel($this->logChannel)->info($query, ['time' => $event->time]);
         }
     }
 
