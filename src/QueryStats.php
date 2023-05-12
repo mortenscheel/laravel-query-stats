@@ -31,7 +31,7 @@ final class QueryStats
     public function __destruct()
     {
         if (! empty($this->capturedQueries)) {
-            foreach ($this->capturedQueries as $query) {
+            foreach (collect($this->capturedQueries)->sortByDesc('count') as $query) {
                 if ($query->count > 1) {
                     Log::channel($this->logChannel)->info("Duplicate query: $query->sql", [
                         'count' => $query->count,
